@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Post, User } from '@/types';
-import Avatar from '@/components/Avatar';
 
 interface PostWithAuthor extends Post {
   author: User;
@@ -32,83 +31,42 @@ export default function PostDetail() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="container">
-        <div className="loading">Loading post...</div>
-      </div>
-    );
-  }
-
-  if (!post) {
-    return (
-      <div className="container">
-        <div className="post-detail">
-          <h2>Post not found</h2>
-          <Link href="/" className="back-link">← Back to Feed</Link>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div>Loading post...</div>;
+  if (!post) return <div>Post not found</div>;
 
   return (
     <div className="container">
-      <Link href="/" className="back-link">← Back to Feed</Link>
+      <Link href="/">← Back to Feed</Link>
       
-      <article className="post-detail">
+      <div className="post-detail">
         <div className="post-header">
-          <Avatar 
-            src={post.author.avatar} 
-            alt={post.author.displayName}
-            size="medium"
-          />
-          <div className="user-info">
+          <img src={post.author.avatar} alt={post.author.displayName} />
+          <div>
             <h2>{post.author.displayName}</h2>
-            <span className="username">@{post.author.username}</span>
-            <p>{new Date(post.createdAt).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long', 
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            })}</p>
+            <span>@{post.author.username}</span>
+            <p>{new Date(post.createdAt).toLocaleDateString()}</p>
           </div>
         </div>
         
         <div className="post-content">
           <p>{post.content}</p>
-          {post.imageUrl && (
-            <img 
-              src={post.imageUrl} 
-              alt="Post content" 
-              className="post-image"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          )}
+          {post.imageUrl && <img src={post.imageUrl} alt="Post image" />}
         </div>
         
         <div className="post-stats">
-          <p>❤️ {post.likes.length} likes</p>
+          <p>{post.likes.length} likes</p>
         </div>
         
         <div className="comments-section">
-          <h3>💬 Comments ({post.comments.length})</h3>
-          {post.comments.length === 0 ? (
-            <p style={{ color: '#718096', fontStyle: 'italic', margin: '20px 0' }}>
-              No comments yet. Be the first to comment!
-            </p>
-          ) : (
-            post.comments.map(comment => (
-              <div key={comment.id} className="comment">
-                <p>{comment.content}</p>
-                <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
-              </div>
-            ))
-          )}
+          <h3>Comments ({post.comments.length})</h3>
+          {post.comments.map(comment => (
+            <div key={comment.id} className="comment">
+              <p>{comment.content}</p>
+              <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
+            </div>
+          ))}
         </div>
-      </article>
+      </div>
     </div>
   );
 }
