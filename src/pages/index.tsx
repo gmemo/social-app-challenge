@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Post, User } from '@/types';
+import Avatar from '@/components/Avatar';
 
 interface PostWithAuthor extends Post {
   author: User;
@@ -27,36 +28,62 @@ export default function Home() {
   };
 
   if (loading) {
-    return <div className="loading">Loading posts...</div>;
+    return (
+      <div className="container">
+        <div className="loading">Loading posts...</div>
+      </div>
+    );
   }
 
   return (
     <div className="container">
-      <h1>Social Feed</h1>
-      <nav>
-        <Link href="/profile">My Profile</Link>
-      </nav>
+      <header className="main-header">
+        <h1>Social Feed</h1>
+        <Link href="/profile" className="nav-link">
+          👤 My Profile
+        </Link>
+      </header>
       
       <div className="posts-feed">
         {posts.map(post => (
-          <div key={post.id} className="post-card">
+          <article key={post.id} className="post-card">
             <div className="post-header">
-              <img src={post.author.avatar} alt={post.author.displayName} />
-              <div>
+              <Avatar 
+                src={post.author.avatar} 
+                alt={post.author.displayName}
+                size="medium"
+              />
+              <div className="user-info">
                 <h3>{post.author.displayName}</h3>
-                <span>@{post.author.username}</span>
+                <span className="username">@{post.author.username}</span>
               </div>
             </div>
             
-            <p>{post.content}</p>
-            {post.imageUrl && <img src={post.imageUrl} alt="Post image" />}
+            <div className="post-content">
+              <p>{post.content}</p>
+              {post.imageUrl && (
+                <img 
+                  src={post.imageUrl} 
+                  alt="Post content" 
+                  className="post-image"
+                  onError={(e) => {
+                    // Hide broken post images
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              )}
+            </div>
             
             <div className="post-actions">
-              <span>{post.likes.length} likes</span>
-              <span>{post.comments.length} comments</span>
-              <Link href={`/posts/${post.id}`}>View Details</Link>
+              <div className="post-stats">
+                <span className="stat-item">{post.likes.length} likes</span>
+                <span className="stat-item">{post.comments.length} comments</span>
+              </div>
+              <Link href={`/posts/${post.id}`} className="view-details-link">
+                View Details →
+              </Link>
             </div>
-          </div>
+          </article>
         ))}
       </div>
     </div>

@@ -1,3 +1,4 @@
+// Data structures as requested
 export interface User {
   id: string;
   username: string;
