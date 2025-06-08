@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { User } from '@/types';
-import Avatar from '@/components/Avatar';
 
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -23,47 +22,22 @@ export default function Profile() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="container">
-        <div className="loading">Loading profile...</div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="container">
-        <div className="profile">
-          <h2>Profile not found</h2>
-          <Link href="/" className="back-link">← Back to Feed</Link>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div>Loading profile...</div>;
+  if (!user) return <div>Profile not found</div>;
 
   return (
     <div className="container">
-      <Link href="/" className="back-link">← Back to Feed</Link>
+      <Link href="/">← Back to Feed</Link>
       
       <div className="profile">
         <div className="profile-header">
-          <Avatar 
-            src={user.avatar} 
-            alt={user.displayName}
-            size="large"
-            className="profile-avatar"
-          />
+          <img src={user.avatar} alt={user.displayName} className="profile-avatar" />
           <div className="profile-info">
             <h1>{user.displayName}</h1>
             <p>@{user.username}</p>
             <p>{user.bio}</p>
-            <p>👥 {user.friendIds.length} friends</p>
-            <p>📅 Member since {new Date(user.createdAt).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}</p>
+            <p>{user.friendIds.length} friends</p>
+            <p>Member since {new Date(user.createdAt).toLocaleDateString()}</p>
           </div>
         </div>
       </div>
